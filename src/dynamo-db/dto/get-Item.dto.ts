@@ -1,5 +1,4 @@
 export class GetItemDto{
-    tableName : string
-    PrimaryKey : string
-    ShortKey : string
+   // tableName : string
+    UniqueId : string
 }
