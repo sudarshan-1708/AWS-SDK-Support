@@ -1,5 +1,7 @@
 export class PutItemDto{
-    tableName : string
+    //tableName : string
     // items contains Pk or Composite PK with addded atributes
-    items : {}
+    UniqueId : string
+    KeyValue : string
+    expiresAt : string
 }

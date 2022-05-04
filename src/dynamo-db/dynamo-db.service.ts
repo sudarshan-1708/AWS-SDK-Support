@@ -3,6 +3,7 @@ import { DeleteItemCommand, DeleteItemCommandInput, DynamoDBClient, PutItemComma
 import { GetItemCommand, GetItemCommandInput } from '@aws-sdk/client-dynamodb';
 import { GetItemDto } from './dto/get-Item.dto';
 import { DeleteItem } from './dto/delete-item.dto';
+import { PutItemDto } from './dto/put-item.dto';
 
 const client = new DynamoDBClient({region:'us-east-1'});
 
@@ -10,13 +11,12 @@ const client = new DynamoDBClient({region:'us-east-1'});
 
 @Injectable()
 export class DynamoDbService {
-
+    
         async getItem(getParams : GetItemDto) {
             const param : GetItemCommandInput= {
-                TableName: getParams.tableName,
+                TableName: 'Jobmanager',
                 Key:{
-                    Artist : {S:getParams.PrimaryKey},
-                    SongTitle : {S:getParams.ShortKey}
+                    UniqueID : {S:getParams.UniqueId}
                 },
                // AttributesToGet : []
             }
@@ -32,13 +32,13 @@ export class DynamoDbService {
             }
         }
 
-        async putItem(){
+        async putItem(getParam : PutItemDto){
             const param : PutItemCommandInput = {
-                TableName : "Music",
+                TableName : 'Jobmanager',       
                 Item : {
-                    "Artist" : {S:"a"},
-                    "SongTitle" : {S:"b"},
-                    "MovieIn" : {S:"Album"}
+                    UniqueID : {S:getParam.UniqueId},
+                    KeyValue : {S:getParam.KeyValue},
+                    TTL : {N:getParam.expiresAt}
                 }
             }
             try{
@@ -51,17 +51,15 @@ export class DynamoDbService {
         async deleteItem(getParam : DeleteItem){
 
             const param : DeleteItemCommandInput = {
-                TableName : getParam.TableName,
+                TableName : 'Jobmanager',
                 Key : {
-                        Artist : {S:getParam.PrimaryKey},
-                        SongTitle : {S:getParam.ShortKey}
+                    UniqueID : {S:getParam.UniqueId}
                 }
             }
-
             try{
                 const data = await client.send(new DeleteItemCommand(param));
                 console.log(data.$metadata);
-                return data.$metadata;
+                return data.$metadata , {"message" : "Item Deleted"};
             }catch(err){console.log(err);}
         }
 

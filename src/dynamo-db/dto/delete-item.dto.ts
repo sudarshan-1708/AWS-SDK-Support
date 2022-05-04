@@ -1,5 +1,4 @@
 export class DeleteItem{
-    TableName : string
-    PrimaryKey : string
-    ShortKey : string
+    //TableName : string
+    UniqueId : string
 }
